@@ -56,7 +56,7 @@ Data, analysis scripts, and model code are available at github.com/bjklab.
 MDRO, hospital microbiome    
   
 ### Acknowledgements:  
-BJK, MJZ, and EL are supported in part by a CDC Cooperative Agreement FOA#CK16-004 "Epicenters for the Prevention of Healthcare Associated Infections”. BJK is supported by the National Institute for Allergy and Infectious Diseases (K23 AI121485 and L30 AI120149). MJZ is supported by the National Institute for Allergy and Infectious Diseases (K23 AI143925). This research was supported by a CDC Cooperative Agreement FOA#CK16-004-Epicenters for the Prevention of Healthcare Associated Infections. 
+BJK, MZD, EL, and MJZ are supported in part by a CDC Cooperative Agreement FOA#CK16-004 "Epicenters for the Prevention of Healthcare Associated Infections”. BJK is supported by the National Institute for Allergy and Infectious Diseases (K23 AI121485 and L30 AI120149). MJZ is supported by the National Institute for Allergy and Infectious Diseases (K23 AI143925). This research was supported by a CDC Cooperative Agreement FOA#CK16-004-Epicenters for the Prevention of Healthcare Associated Infections. 
 
 ### Disclosures:  
 JHH’s contributions were made at the listed affiliations, but she is currently employed by, and holds shares in, the GSK group of companies.    

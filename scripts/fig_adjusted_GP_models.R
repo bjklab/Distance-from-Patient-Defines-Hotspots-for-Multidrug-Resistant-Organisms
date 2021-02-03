@@ -293,7 +293,7 @@ m_cx_pos_mixed_site_genus %>%
          site = fct_recode(site,
                            "Near Patient" = "ES1",
                            "Intermediate Distance" = "ES2",
-                           "Far From Patient, Near Bathroom" = "ES3")) %>%
+                           "Far From Patient, Near Wastewater" = "ES3")) %>%
   ggplot(data = ., aes(y = genus, x = r_genus_site_OR, fill = stat(x > 1))) +
   tidybayes::stat_halfeye(alpha = 0.9) +
   geom_vline(xintercept = 1, linetype = "dashed") +
@@ -301,7 +301,7 @@ m_cx_pos_mixed_site_genus %>%
   facet_wrap(facets = ~ site, nrow = 1) +
   coord_cartesian(xlim = c(0,3.5)) +
   theme_bw() +
-  theme(strip.text = ggtext::element_markdown(color = "black", size = 10),
+  theme(strip.text = ggtext::element_markdown(color = "black", size = 9),
         axis.text.x = ggtext::element_markdown(color = "black"),
         axis.text.y = ggtext::element_markdown(color = "black"),
         legend.position = "none",
