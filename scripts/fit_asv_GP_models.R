@@ -27,7 +27,7 @@ meta_asv
 
 
 iceman_corrected %>%
-  mutate(genus_label = case_when(genus == "Acinetobacter" ~ "<i>Acinetobacter</i> (ESBL/CR)",
+  mutate(genus_label = case_when(genus == "Acinetobacter" ~ "<i>Acinetobacter</i> (CR)",
                                  genus == "Citrobacter" ~ "<i>Citrobacter</i> (ESBL/CR)",
                                  genus == "Clostridioides" ~ "<i>Clostridioides difficile</i>",
                                  genus == "Enterobacter" ~ "<i>Enterobacter</i> (ESBL/CR)",
