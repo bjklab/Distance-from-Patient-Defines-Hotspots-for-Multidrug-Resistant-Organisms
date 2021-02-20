@@ -1,6 +1,6 @@
 ---
-#title: "Distance from Patient Defines Hotspots for Multidrug-Resistant Organisms in the Healthcare Environment"
-#author: "Brendan J. Kelly, MD, MS"
+#title: "Healthcare Micro-Environments Define Multidrug-Resistant Organism Persistence"  
+#author: "Brendan J. Kelly, MD, MS"  
 bibliography: bib/references.bib
 csl: csl/journal-of-clinical-microbiology.csl
 output: html_document
@@ -19,7 +19,7 @@ library(tidybayes)
   
   
 ## Title  
-Distance from Patient Defines Hotspots for Multidrug-Resistant Organisms in the Healthcare Environment  
+Healthcare Micro-Environments Define Multidrug-Resistant Organism Persistence  
   
 ## Abbreviated Title  
 Distance-Defined MDRO Hotspots  
@@ -56,7 +56,7 @@ Data, analysis scripts, and model code are available at github.com/bjklab.
 MDRO, hospital microbiome    
   
 ### Acknowledgements:  
-BJK, MZD, EL, and MJZ are supported in part by a CDC Cooperative Agreement FOA#CK16-004 "Epicenters for the Prevention of Healthcare Associated Infections”. BJK is supported by the National Institute for Allergy and Infectious Diseases (K23 AI121485 and L30 AI120149). MJZ is supported by the National Institute for Allergy and Infectious Diseases (K23 AI143925). This research was supported by a CDC Cooperative Agreement FOA#CK16-004-Epicenters for the Prevention of Healthcare Associated Infections. 
+BJK, MJZ, and EL are supported in part by a CDC Cooperative Agreement FOA#CK16-004 "Epicenters for the Prevention of Healthcare Associated Infections”. BJK is supported by the National Institute for Allergy and Infectious Diseases (K23 AI121485 and L30 AI120149). MJZ is supported by the National Institute for Allergy and Infectious Diseases (K23 AI143925). This research was supported by a CDC Cooperative Agreement FOA#CK16-004-Epicenters for the Prevention of Healthcare Associated Infections. 
 
 ### Disclosures:  
 JHH’s contributions were made at the listed affiliations, but she is currently employed by, and holds shares in, the GSK group of companies.    
@@ -71,9 +71,9 @@ JHH’s contributions were made at the listed affiliations, but she is currently
   
 ### Abstract  
   
-* __Background__: Multidrug-resistant organisms (MDROs) colonizing the healthcare environment have been shown to contribute to risk for healthcare-associated infections (HAIs), with adverse effects on patient morbidity and mortality. We sought to define how the distance from patient and wastewater sources of bacterial contamination define MDRO hotspots in the healthcare environment.     
+* __Background__: Multidrug-resistant organisms (MDROs) colonizing the healthcare environment have been shown to contribute to risk for healthcare-associated infections (HAIs), with adverse effects on patient morbidity and mortality. We sought to define how the distance from patient and wastewater sources of bacterial contamination define MDRO contamination and persistence in the healthcare environment.     
   
-* __Methods__: We performed a prospective cohort study, enrolling 51 hospital rooms at the time of admitting a patient who had a positive culture for an eligible MDRO within the prior 30 days. We performed  systematic sampling and MDRO culture of rooms, as well as 16S rRNA sequencing from environmental samples obtained along an axis of from the patient's bed towards the bathroom and/or in-room sink and toilet.      
+* __Methods__: We performed a prospective cohort study, enrolling 51 hospital rooms at the time of admitting a patient who had a positive culture for an eligible MDRO within the prior 30 days. We performed systematic sampling and MDRO culture of rooms, as well as 16S rRNA sequencing from environmental samples obtained along an axis of from the patient's bed towards the bathroom and/or in-room sink and toilet.      
   
 * __Results__: The probability of detecting resistant Gram-negative organisms, including _Enterobacterales_, _Acinetobacter_, and _Pseudomonas_, increased with distance from the patient. In contrast, _Clostridioides difficile_ and methicillin-resistant _Staphylococcus aureus_ were more likely to be detected in close proximity to the patient. Resistant _Pseudomonas_ and _S. aureus_ were enriched in these hotspots despite broad deposition 16S rRNA gene sequences assigned to the same genera, suggesting modifiable factors that permit the persistence of these MDROs.   
     
@@ -122,11 +122,11 @@ To define the impact of distance from patient and wastewater sources on the spec
   
 * __Definition of Exposures and Outcomes__: The primary exposure of interest was the distance from the patient (measured towards the wastewater sites). The primary outcome of interest was the detection of a culturable MDRO, including MRSA, _C.difficile_, vancomycin-resistant _Enterococcus_ (VRE), extended-spectrum beta-lactamase (ESBL) producing _Enterobacterales_, carbapenem-resistant _Enterobacterales_, _Acinetobacter_, or _Pseudomonas_. Secondary outcomes of interest included the detection of MDRO genera by 16S rRNA gene sequencing.    
   
-* __Statistical Methods__: Data were organized using R statistical software version 3.6.1 [@R_Core_Team2018-xo], and plots generated using the “ggplot2” package [@Wickham2016-eh]. We examined the relationship between distance from the patient (towards the wastewater sites) and the probability of MDRO detection using a gaussian process model (exponentiated-quadratic kernel) for distance, with models fit separately for each of 11 detected MDROs. The same gaussian process model evaluated the relationship between distance and the detection of MDRO genera. We used a mixed-effects model with random effects for genus and sampling site to evaluate the relationship between sequence-based detection of bacterial DNA contamination and risk for MDRO detection. Models were fit using Stan Hamiltonian Monte Carlo (HMC) version 2.21, via the "brms" package with default, weakly-informative priors [@Carpenter2017-ec; @Burkner2017-yr]. Prior predictive modeling was performed, and models were fit with 4 chains of 1000 iterations, confirmed with HMC diagnostics (no divergent iterations, Rhat statistic < 1.1 for all parameters, and E-BFMI > 0.2) [@McElreath2016-sf; @Gabry2019-le; @Gelman2020-yu]. We examined parameter distributions at 50%, 80%, and 95% posterior credible intervals to understand the relationship between exposure and outcome variables.  
+* __Statistical Methods__: Data were organized using R statistical software version 3.6.1 [@R_Core_Team2018-xo], and plots generated using the “ggplot2” package [@Wickham2016-eh]. We examined the relationship between distance from the patient (towards the wastewater sites) and the probability of MDRO detection using a Gaussian process model (exponentiated-quadratic kernel) for distance, with models fit separately for each of 11 detected MDROs. The same Gaussian process model evaluated the relationship between distance and the detection of MDRO genera. We also evaluated mixed-effects model incorporating a random effect for subjects to account for clustering of longitudinal data. To understand the relationship between bacterial DNA contamination and risk for MDRO detection, we used a mixed-effects model with random effects for genus and sampling site. Models were fit using Stan Hamiltonian Monte Carlo (HMC) version 2.21, via the "brms" package with default, weakly-informative priors [@Carpenter2017-ec; @Burkner2017-yr]. Prior predictive modeling was performed, and models were fit with 4 chains of 1000 iterations, confirmed with HMC diagnostics (no divergent iterations, Rhat statistic < 1.1 for all parameters, and E-BFMI > 0.2) [@McElreath2016-sf; @Gabry2019-le; @Gelman2020-yu]. We examined parameter distributions at 50%, 80%, and 95% posterior credible intervals to understand the relationship between exposure and outcome variables.  
   
 * __Power and Sample Size__: We anticipated that the enrollment of 50 subjects would permit 85% power to detect a difference of 20% in MDRO culture recovery between near and far specimen collection sites, with type 1 error less than 0.05.    
   
-* __Availability of Data__: Sequence data has been uploaded to the National Center for Biotechnology Information's Sequence Read Archive (NCBI SRA): PRJNA689547. Data, analysis scripts, and model code are available at https://github.com/bjklab/Distance-from-Patient-Defines-Hotspots-for-Multidrug-Resistant-Organisms.  
+* __Availability of Data__: Sequence data has been uploaded to the National Center for Biotechnology Information's Sequence Read Archive (NCBI SRA): PRJNA689547. Data, analysis scripts, and model code are available at https://github.com/bjklab.  
   
   
 -----  
@@ -138,7 +138,7 @@ To define the impact of distance from patient and wastewater sources on the spec
   
 * __Detection of MDROs in the Proximity to Patient-Associated MDROs__: We enrolled 51 patient rooms at the time of admitting a patient who had been recently diagnosed with MDRO colonization or infection by clinical culture. The most common enrolling isolate for patients included in the study was C.difficile (n=16, 31%), followed by ESBL-producing Enterobacterales (ESBL) (n=15, 29%), MRSA (n=13, 25%), VRE (n=7, 14%), and carbapenem-resistant Gram-negative organisms (CRO) (n=4, 8%). Across 51 subjects, we performed 136 sampling events, with each event collecting composite samples from three in-room sites (near, intermediate, and far), and each composite sample plated on six MDRO-selective media. **Table 1** shows the 11 MDROs identified across all enrolled subjects, the total number of times they were recovered from the healthcare environment, and frequency with which they were detected from cultured environmental specimens.        
   
-* __Impact of Distance from Patient on MDRO Detection by Bacterial Culture__: We related the probability of MDRO detection by selective culture to the distance from the patient and towards the wastewater sites, using mean distances from each of the three in-room sites sampled at each sampling event. **Figure 1** depicts the impact of distance from patient on each of the 11 MDROs encountered in across our cohort. The probability of detecting ESBL and CR Gram-negative organisms, including _Enterobacterales_, _Acinetobacter_, and _Pseudomonas_, increased with distance from the patient. In contrast, _Clostridioides difficile_ and MRSA were more likely to be detected in close proximity to the patient, and less likely to be detected in the wastewater sites. Of note, VRE was distributed more evenly across all areas.   
+* __Impact of Distance from Patient on MDRO Detection by Bacterial Culture__: We related the probability of MDRO detection by selective culture to the distance from the patient and towards the wastewater sites, using mean distances from each of the three in-room sites sampled at each sampling event. **Figure 1** depicts the impact of distance from patient on each of the 11 MDROs encountered in across our cohort. The probability of detecting ESBL and CR Gram-negative organisms, including _Enterobacterales_, _Acinetobacter_, and _Pseudomonas_, increased with distance from the patient. In contrast, _Clostridioides difficile_ and MRSA were more likely to be detected in close proximity to the patient, and less likely to be detected in the wastewater sites. Of note, VRE was distributed more evenly across all areas. Given the patterns of MDRO detection observed at the genus level, we also examined the relationship between aggregate Gram-negative or Gram-positive MDROs and the distance from patient (**Supplemental Figure 1**). This analysis confirmed the substantial increase in Gram-negative MDRO detection with increasing distance from the patient (and towards the wastewater site), with the opposite pattern observed among Gram-positive MDROs.      
   
 * __Impact of Distance from Patient on Bacterial DNA Deposition__: We were able to complement comprehensive, culture-based surveillance with 16S rRNA gene sequencing to detect bacterial DNA deposition in the healthcare environment in a subset of 41 specimens from 16 of our cohort's subjects. In **Figure 2**, we compare the impact of distance from patient on the bacterial DNA reads assigned to the 11 genera from which MDROs were cultured. We found that _Enterobaceriaceae_, including _Citrobacter_, _Enterobacter_, _Klebsiella_, and _Raoultella_, exhibited a similar pattern as did bacterial cultures, increasing with distance from the patient and in proximity to the wastewater sites. In contrast, bacterial DNA assigned to _Acinetobacter_ and _Pseudomonas_ was distributed more evenly across all areas, though bacterial culture was more likely to detect these genera in the wastewater sites. Bacterial DNA reads assigned to _Staphylococcus_ were also distributed evenly across all areas, though bacterial culture was more likely to detect MRSA in close proximity to patients.           
   
@@ -230,7 +230,7 @@ knitr::include_graphics(path = "./figs/p_cx_gp.svg")
 ```
   
   
-__Figure 1: Impact of distance from the patient on MDRO detection in the healthcare environment.__ Distance from the head of the patient's bed and towards the wastewater sites is shown on the horizontal axis. The vertical axis depicts the probability of MDRO detection by selective culture for each of 11 detected MDROs according to a logistic regression model incorporating a gaussian process for distance. The black line shows the best estimate, and shades of red indicate 50%, 80%, and 95% posterior credible intervals. ESBL = extended-spectrum beta-lactamase; CR = carbapenem-resistant; VRE = vancomycin-resistant _Enterococcus_; MRSA = methicillin-resistant _S. aureus_.    
+__Figure 1: Impact of distance from the patient on MDRO detection in the healthcare environment.__ Distance from the head of the patient's bed and towards the wastewater sites is shown on the horizontal axis. The vertical axis depicts the probability of MDRO detection by selective culture for each of 11 detected MDROs according to a logistic regression model incorporating a Gaussian process for distance. The black line shows the best estimate, and shades of red indicate 50%, 80%, and 95% posterior credible intervals. ESBL = extended-spectrum beta-lactamase; CR = carbapenem-resistant; VRE = vancomycin-resistant _Enterococcus_; MRSA = methicillin-resistant _S. aureus_.    
   
   
 -----  
@@ -247,7 +247,7 @@ knitr::include_graphics(path = "./figs/p_asv_gp.svg")
 ```
   
   
-__Figure 2: Impact of distance from the patient on bacterial DNA deposition in the healthcare environment.__ Distance from the head of the patient's bed and towards the wastewater sites is shown on the horizontal axis. The vertical axis depicts the probability of bacterial genus detection by 16S rRNA gene sequencing for genera corresponding to each of 11 detected MDROs according to a logistic regression model incorporating a gaussian process for distance. The black line shows the best estimate, and shades of red indicate 50%, 80%, and 95% posterior credible intervals.         
+__Figure 2: Impact of distance from the patient on bacterial DNA deposition in the healthcare environment.__ Distance from the head of the patient's bed and towards the wastewater sites is shown on the horizontal axis. The vertical axis depicts the probability of bacterial genus detection by 16S rRNA gene sequencing for genera corresponding to each of 11 detected MDROs according to a logistic regression model incorporating a Gaussian process for distance. The black line shows the best estimate, and shades of red indicate 50%, 80%, and 95% posterior credible intervals.         
   
   
 -----  
@@ -269,15 +269,24 @@ knitr::include_graphics(path = "./figs/p_genus_clr_marginal_per_site.svg")
 __Figure 3: Association between bacterial DNA deposition and MDRO detection.__ The odds ratio of MDRO detection associated with each unit increase in CLR-transformed 16S rRNA gene sequence abundance for the corresponding genus is shown for each of the 11 MDROs across each of the three environmental sampling sites. The black points, bars, and lines indicate the posterior median, 50%CI, and 95%CI intervals, respectively. The posterior distribution is depicted above the interval with the area supporting increased detection shaded blue, and the area supporting decreased detection shaded gray.  
   
   
- <!-- 
- <!-- -----  
+-----  
 \newpage
 <P style = "page-break-before: always">
   
   
+### Supplemental Figures:   
   
-### Supplemental Figures: --> 
+#### Supplemental Figure 1:  
+  
+```{r sfig1, eval=TRUE, autodep=TRUE, fig.align='center', out.width='60%'}
 
+knitr::include_graphics(path = "./figs/p_cx_gp_gram_subject.svg")
+
+
+```
+  
+  
+__Supplemental Figure 1: Impact of distance from the patient on aggregate Gram-negative and Gram-positive MDROs in the healthcare environment.__ Distance from the head of the patient's bed and towards the wastewater sites is shown on the horizontal axis. The vertical axis depicts the probability of MDRO detection by selective culture for Gram-negative or Gram-positive MDROs in aggregate, according to a logistic regression model incorporating a Gaussian process for distance. The black line shows the best estimate, and shades of red indicate 50%, 80%, and 95% posterior credible intervals.       
   
   
 -----

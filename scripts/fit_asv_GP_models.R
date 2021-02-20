@@ -131,17 +131,17 @@ tribble(
 
 
 #' run model
-# dat_asv_genus %>%
-#   brm(formula = seq_positive ~ gp(mean_distance_meters, by = genus),
-#       data = .,
-#       family = bernoulli,
-#       chains = 4,
-#       cores = 4,
-#       control = list("adapt_delta" = 0.999, max_treedepth = 18),
-#       backend = "cmdstanr",
-#       seed = 16) -> m_mean_distance_gp_mix_genus_seq
-# 
-# m_mean_distance_gp_mix_genus_seq %>% write_rds(file = "./models/binomial/m_asv_v_mean_distance_gp_mix_genus.rds.gz", compress = "gz")
+dat_asv_genus %>%
+  brm(formula = seq_positive ~ gp(mean_distance_meters, by = genus),
+      data = .,
+      family = bernoulli,
+      chains = 4,
+      cores = 4,
+      control = list("adapt_delta" = 0.999, max_treedepth = 18),
+      backend = "cmdstanr",
+      seed = 16) -> m_mean_distance_gp_mix_genus_seq
+
+m_mean_distance_gp_mix_genus_seq %>% write_rds(file = "./models/binomial/m_asv_v_mean_distance_gp_mix_genus.rds.gz", compress = "gz")
 m_mean_distance_gp_mix_genus_seq <- read_rds(file = "./models/binomial/m_asv_v_mean_distance_gp_mix_genus.rds.gz")
 
 m_mean_distance_gp_mix_genus_seq
@@ -193,6 +193,77 @@ p_asv_gp
 # p_asv_gp %>%
 #   ggsave(filename = "./figs/p_asv_gp.svg", height = 5, width = 8, units = "in")
 
+
+
+
+
+#' ###########################################
+#' 
+#' ADD RANDOM INTERCEPT FOR SUBJECTS & model sequencing detection as a result of GP(mean distance)
+#' 
+#' ###########################################
+
+#' run model
+dat_asv_genus %>%
+  brm(formula = seq_positive ~ gp(mean_distance_meters, by = genus) + (1|subject_id),
+      data = .,
+      family = bernoulli,
+      chains = 4,
+      cores = 4,
+      control = list("adapt_delta" = 0.999, max_treedepth = 18),
+      backend = "cmdstanr",
+      seed = 16) -> m_mean_distance_gp_mix_genus_seq_subject
+
+m_mean_distance_gp_mix_genus_seq_subject %>% write_rds(file = "./models/binomial/m_asv_v_mean_distance_gp_mix_genus_subject.rds.gz", compress = "gz")
+m_mean_distance_gp_mix_genus_seq_subject <- read_rds(file = "./models/binomial/m_asv_v_mean_distance_gp_mix_genus_subject.rds.gz")
+
+m_mean_distance_gp_mix_genus_seq_subject
+rstan::check_hmc_diagnostics(m_mean_distance_gp_mix_genus_seq_subject$fit)
+m_mean_distance_gp_mix_genus_seq_subject %>% pp_check()
+
+m_mean_distance_gp_mix_genus_seq_subject %>%
+  posterior_summary() %>%
+  as_tibble(rownames = "param") %>%
+  gt::gt() %>%
+  gt::fmt_number(columns = 2:5, n_sigfig = 3)
+
+
+#' fitted
+m_mean_distance_gp_mix_genus_seq_subject$data %>%
+  as_tibble() %>%
+  expand(mean_distance_meters = modelr::seq_range(mean_distance_meters, n = 20),
+         genus = unique(genus),
+         subject_id = unique(subject_id)) %>%
+  add_fitted_draws(m_mean_distance_gp_mix_genus_seq_subject) %>%
+  left_join(distinct(select(dat, genus, genus_label)), by = "genus") %>%
+  identity() -> m_mean_distance_gp_mix_genus_seq_subject_fitted
+m_mean_distance_gp_mix_genus_seq_subject_fitted
+
+
+m_mean_distance_gp_mix_genus_seq_subject_fitted %>%
+  ggplot(aes(x = mean_distance_meters, y = .value)) +
+  facet_wrap(facets = ~ genus_label, scales = "free_y") +
+  stat_lineribbon() +
+  scale_fill_brewer(palette = "Blues") +
+  labs(x = "Distance from Patient & Towards Wastewater Sites (meters)",
+       y = "Probability of Positive MDRO Culture",
+       fill = "Posterior\nCredible\nInterval") +
+  theme_bw() +
+  theme(strip.text = ggtext::element_markdown(color = "black", size = 8),
+        axis.text.x = ggtext::element_markdown(color = "black"),
+        axis.text.y = ggtext::element_markdown(color = "black"),
+        legend.position = c(0.9, 0.12),
+        legend.background = element_rect(fill = "white", color = "black", size = 0.25),
+        strip.background = element_blank()) -> p_asv_gp_subject
+p_asv_gp_subject
+
+
+p_asv_gp_subject %>%
+  ggsave(filename = "./figs/p_asv_gp_subject.pdf", height = 5, width = 8, units = "in")
+p_asv_gp_subject %>%
+  ggsave(filename = "./figs/p_asv_gp_subject.png", height = 5, width = 8, units = "in", dpi = 600)
+p_asv_gp_subject %>%
+  ggsave(filename = "./figs/p_asv_gp_subject.svg", height = 5, width = 8, units = "in")
 
 
 

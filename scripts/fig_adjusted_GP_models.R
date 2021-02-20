@@ -135,17 +135,17 @@ tribble(
 
 
 #' run model
-# dat_cx_asv_genus %>%
-#   brm(formula = cx_positive ~ (1 + clr_read_count|genus) + gp(mean_distance_meters, by = genus),
-#       data = .,
-#       family = bernoulli,
-#       chains = 4,
-#       cores = 4,
-#       control = list("adapt_delta" = 0.999, max_treedepth = 18),
-#       backend = "cmdstanr",
-#       seed = 16) -> m_mean_distance_gp_mix_genus_seq_adjusted
-# 
-# m_mean_distance_gp_mix_genus_seq_adjusted %>% write_rds(file = "./models/binomial/m_cx_v_mean_distance_gp_mix_genus_seq_adjusted.rds.gz", compress = "gz")
+dat_cx_asv_genus %>%
+  brm(formula = cx_positive ~ (1 + clr_read_count|genus) + gp(mean_distance_meters, by = genus),
+      data = .,
+      family = bernoulli,
+      chains = 4,
+      cores = 4,
+      control = list("adapt_delta" = 0.999, max_treedepth = 18),
+      backend = "cmdstanr",
+      seed = 16) -> m_mean_distance_gp_mix_genus_seq_adjusted
+
+m_mean_distance_gp_mix_genus_seq_adjusted %>% write_rds(file = "./models/binomial/m_cx_v_mean_distance_gp_mix_genus_seq_adjusted.rds.gz", compress = "gz")
 m_mean_distance_gp_mix_genus_seq_adjusted <- read_rds(file = "./models/binomial/m_cx_v_mean_distance_gp_mix_genus_seq_adjusted.rds.gz")
 
 m_mean_distance_gp_mix_genus_seq_adjusted
@@ -231,18 +231,18 @@ dat_cx_asv_genus %>%
 
 
 #' run model
-# dat_cx_asv_genus %>%
-#   brm(formula = cx_positive ~ 1 + (0 + clr_read_count | genus / specimen_site),
-#       data = .,
-#       family = bernoulli,
-#       #prior = c(set_prior(prior = "student_t(3, 0, 1)", class = "sd")),
-#       chains = 4,
-#       cores = 4,
-#       control = list("adapt_delta" = 0.999, max_treedepth = 18),
-#       backend = "cmdstanr",
-#       seed = 16) -> m_cx_pos_mixed_site_genus
-# 
-# m_cx_pos_mixed_site_genus %>% write_rds(file = "./models/binomial/m_cx_pos_mixed_site_genus.rds.gz", compress = "gz")
+dat_cx_asv_genus %>%
+  brm(formula = cx_positive ~ 1 + (0 + clr_read_count | genus / specimen_site),
+      data = .,
+      family = bernoulli,
+      #prior = c(set_prior(prior = "student_t(3, 0, 1)", class = "sd")),
+      chains = 4,
+      cores = 4,
+      control = list("adapt_delta" = 0.999, max_treedepth = 18),
+      backend = "cmdstanr",
+      seed = 16) -> m_cx_pos_mixed_site_genus
+
+m_cx_pos_mixed_site_genus %>% write_rds(file = "./models/binomial/m_cx_pos_mixed_site_genus.rds.gz", compress = "gz")
 m_cx_pos_mixed_site_genus <- read_rds(file = "./models/binomial/m_cx_pos_mixed_site_genus.rds.gz")
 
 m_cx_pos_mixed_site_genus
@@ -276,7 +276,7 @@ m_cx_pos_mixed_site_genus %>%
 #        y = "") -> p_genus_clr_marginal
 # p_genus_clr_marginal
 
-  
+
 
 
 m_cx_pos_mixed_site_genus %>%
@@ -293,7 +293,7 @@ m_cx_pos_mixed_site_genus %>%
          site = fct_recode(site,
                            "Near Patient" = "ES1",
                            "Intermediate Distance" = "ES2",
-                           "Far From Patient, Near Wastewater" = "ES3")) %>%
+                           "Far From Patient, Near Bathroom" = "ES3")) %>%
   ggplot(data = ., aes(y = genus, x = r_genus_site_OR, fill = stat(x > 1))) +
   tidybayes::stat_halfeye(alpha = 0.9) +
   geom_vline(xintercept = 1, linetype = "dashed") +
@@ -301,7 +301,7 @@ m_cx_pos_mixed_site_genus %>%
   facet_wrap(facets = ~ site, nrow = 1) +
   coord_cartesian(xlim = c(0,3.5)) +
   theme_bw() +
-  theme(strip.text = ggtext::element_markdown(color = "black", size = 9),
+  theme(strip.text = ggtext::element_markdown(color = "black", size = 10),
         axis.text.x = ggtext::element_markdown(color = "black"),
         axis.text.y = ggtext::element_markdown(color = "black"),
         legend.position = "none",
@@ -352,6 +352,39 @@ m_cx_pos_mixed_site_genus %>%
 #' 
 #' ###########################################
 
+
+
+
+m_cx_pos_mixed_site_genus$data %>%
+  as_tibble() %>%
+  expand(clr_read_count = modelr::seq_range(clr_read_count, n = 10),
+         genus = unique(genus),
+         specimen_site = unique(specimen_site),
+         cx_positive = unique(cx_positive)) %>%
+  add_predicted_draws(m_cx_pos_mixed_site_genus) %>%
+  left_join(distinct(select(dat, genus, genus_label)), by = "genus") %>%
+  ungroup() %>%
+  mutate(site = factor(specimen_site),
+         site = fct_recode(site,
+                           "Near Patient" = "ES1",
+                           "Intermediate Distance" = "ES2",
+                           "Far From Patient, Near Bathroom" = "ES3")) %>%
+  ungroup() %>%
+  identity() -> m_cx_pos_mixed_site_genus_predict
+m_cx_pos_mixed_site_genus_predict
+
+
+m_cx_pos_mixed_site_genus_predict %>%
+  ggplot(data = ., aes(y = genus, x = .prediction, fill = stat(x > 0.5))) +
+  tidybayes::stat_halfeye(alpha = 0.9) +
+  #geom_vline(xintercept = 1, linetype = "dashed") +
+  scale_fill_manual(values = c("gray80","skyblue")) +
+  facet_wrap(facets = ~ site, nrow = 1)
+
+
+
+
+
 m_cx_pos_mixed_site_genus$data %>%
   as_tibble() %>%
   expand(clr_read_count = modelr::seq_range(clr_read_count, n = 10),
@@ -370,6 +403,15 @@ m_cx_pos_mixed_site_genus$data %>%
   identity() -> m_cx_pos_mixed_site_genus_resid
 m_cx_pos_mixed_site_genus_resid
 
-#qplot(data = ., x = genus, y = .residual, fill = genus, geom = "boxplot", facets = ~ site)
 
 
+m_cx_pos_mixed_site_genus_resid %>%
+  ggplot(data = ., aes(y = genus, x = exp(.residual), fill = stat(x > 1))) +
+  tidybayes::stat_halfeye(alpha = 0.9) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  scale_fill_manual(values = c("gray80","skyblue")) +
+  facet_wrap(facets = ~ site, nrow = 1)
+
+
+
+#' see also from Matthew Kay: https://mjskay.github.io/tidybayes/articles/tidybayes-residuals.html

@@ -50,8 +50,8 @@ iceman_corrected %>%
 #' ###########################################
 
 #' media types
-# haven::read_dta("./data/10_16_20 ICEMAN LabVantage File Brendan.dta") %>%
-#   count(Media)
+haven::read_dta("./data/10_16_20 ICEMAN LabVantage File Brendan.dta") %>%
+  count(Media)
 
 
 #' subject and specimen tallies
@@ -65,7 +65,7 @@ iceman_corrected %>%
                   column_labels.border.bottom.color = "black",
                   column_labels.border.top.color = "black",
                   table_body.border.bottom.color = "black")
-  
+
 
 
 #' subject sampling event tallies
@@ -115,7 +115,7 @@ iceman_corrected %>%
   group_by(genus_label) %>%
   summarise(positive_cultures = sum(cx_positive, na.rm = TRUE),
             percent_positive = positive_cultures / n(),
-            ) %>%
+  ) %>%
   ungroup() %>%
   gt::gt() %>%
   gt::cols_label(genus_label = "MDRO", positive_cultures = gt::html("Total Positive<br>Cultures"), percent_positive = "Percent Positive") %>%
