@@ -247,7 +247,7 @@ knitr::include_graphics(path = "./figs/p_asv_gp.svg")
 ```
   
   
-__Figure 2: Impact of distance from the patient on bacterial DNA deposition in the healthcare environment.__ Distance from the head of the patient's bed and towards the wastewater sites is shown on the horizontal axis. The vertical axis depicts the probability of bacterial genus detection by 16S rRNA gene sequencing for genera corresponding to each of 11 detected MDROs according to a logistic regression model incorporating a Gaussian process for distance. The black line shows the best estimate, and shades of red indicate 50%, 80%, and 95% posterior credible intervals.         
+__Figure 2: Impact of distance from the patient on bacterial DNA deposition in the healthcare environment.__ Distance from the head of the patient's bed and towards the wastewater sites is shown on the horizontal axis. The vertical axis depicts the probability of bacterial genus detection by 16S rRNA gene sequencing for genera corresponding to each of 11 detected MDROs according to a logistic regression model that incorporates a Gaussian process prior for distance. The black line shows the best estimate, and shades of blue indicate 50%, 80%, and 95% posterior credible intervals.         
   
   
 -----  
@@ -260,13 +260,13 @@ __Figure 2: Impact of distance from the patient on bacterial DNA deposition in t
 
 ```{r fig3, eval=TRUE, autodep=TRUE, fig.align='center', out.width='90%'}
 
-knitr::include_graphics(path = "./figs/p_genus_clr_marginal_per_site.svg")
+knitr::include_graphics(path = "./figs/p_microbiome_gp_combined.svg")
 
 
 ```
   
   
-__Figure 3: Association between bacterial DNA deposition and MDRO detection.__ The odds ratio of MDRO detection associated with each unit increase in CLR-transformed 16S rRNA gene sequence abundance for the corresponding genus is shown for each of the 11 MDROs across each of the three environmental sampling sites. The black points, bars, and lines indicate the posterior median, 50%CI, and 95%CI intervals, respectively. The posterior distribution is depicted above the interval with the area supporting increased detection shaded blue, and the area supporting decreased detection shaded gray.  
+__Figure 3: Impact of distance from the patient on total bacterial abundance, bacterial community diversity, and richness.__ Distance from the head of the patient's bed and towards the wastewater sites is shown on the horizontal axis. The vertical axis depicts (A) the total bacterial abundance measured by 16S rRNA gene qPCR, (B) the bacterial community diversity measured by the Shannon index, or (C) the bacterial community richness measured by number of ASVs, according to a linear regression model that incorporates a Gaussian process prior for distance. The black line shows the best estimate, and shades of blue indicate 50%, 80%, and 95% posterior credible intervals.      
   
   
 -----  

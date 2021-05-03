@@ -170,7 +170,7 @@ dat_scaled %>%
       family = gaussian,
       chains = 4,
       cores = 4,
-      control = list("adapt_delta" = 0.999, max_treedepth = 18),
+      control = list("adapt_delta" = 0.9999, max_treedepth = 18),
       backend = "cmdstanr",
       seed = 16) -> m_mean_distance_gp_qpcr
 
@@ -407,7 +407,7 @@ dat_scaled %>%
       family = gaussian,
       chains = 4,
       cores = 4,
-      control = list("adapt_delta" = 0.9999, max_treedepth = 18),
+      control = list("adapt_delta" = 0.99999, max_treedepth = 18),
       backend = "cmdstanr",
       seed = 16) -> m_mean_distance_gp_num_asvs_subject
 
@@ -482,10 +482,12 @@ p_num_asvs_gp_subject
 library(patchwork)
 
 p_qpcr_gp_subject +
-  p_shannon_gp_subject +
-  p_num_asvs_gp_subject +
+  p_shannon_gp_subject + scale_y_continuous(limits = c(0,NA)) +
+  p_num_asvs_gp_subject + scale_y_continuous(limits = c(0,NA)) +
+  plot_annotation(tag_levels = 'A') +
   plot_layout(ncol = 3, widths = c(1,1,1), guides = "collect") &
-  theme(plot.margin = margin(2,2,2,2), legend.position = "top", legend.direction = "horizontal") %>%
+  #scale_fill_brewer(palette = "Purples") &
+  theme(plot.margin = margin(5,5,5,5), plot.tag.position = c(0.05,0.85), legend.position = "top", legend.direction = "horizontal", axis.title.x = element_blank()) %>%
   identity() -> p
 p
 
@@ -508,6 +510,197 @@ p_gt_extra
 
 
 
+
+
+
+#' ###########################################
+#' 
+#' qPCR, DIVERSITY, and RICHNESS vs CULTURE
+#' 
+#' ###########################################
+
+qpcr %>%
+  left_join(select(meta_asv, specimen_id, subject_id, specimen_site, sampleevent)) %>%
+  distinct() %>%
+  left_join(dat, by = c("subject_id", "specimen_site", "sampleevent")) %>%
+  rename(qpcr = qpcr_copy_per_ul) %>%
+  mutate_at(.vars = vars(qpcr, shannon, num_asvs), .funs = list("scaled" = ~ scale(.x)[,1], "log" = ~ log(.x))) %>%
+  identity() -> dat_cx_qpcr
+dat_cx_qpcr
+
+
+#' run model: qPCR
+dat_cx_qpcr %>%
+  brm(formula = cx_positive ~ (qpcr_log + 0 | genus) + (1 | subject_id),
+      data = .,
+      family = bernoulli,
+      chains = 4,
+      cores = 4,
+      control = list("adapt_delta" = 0.999, max_treedepth = 18),
+      backend = "cmdstanr",
+      seed = 16) -> m_cx_qpcr_mix_genus_subject
+
+m_cx_qpcr_mix_genus_subject %>% write_rds(file = "./models/binomial/m_cx_v_qpcr_mix_genus_subject.rds.gz", compress = "gz")
+m_cx_qpcr_mix_genus_subject <- read_rds(file = "./models/binomial/m_cx_v_qpcr_mix_genus_subject.rds.gz")
+
+m_cx_qpcr_mix_genus_subject
+rstan::check_hmc_diagnostics(m_cx_qpcr_mix_genus_subject$fit)
+m_cx_qpcr_mix_genus_subject %>% pp_check()
+
+m_cx_qpcr_mix_genus_subject %>%
+  posterior_summary() %>%
+  as_tibble(rownames = "param") %>%
+  gt::gt() %>%
+  gt::fmt_number(columns = 2:5, n_sigfig = 3)
+
+
+#' fitted
+m_cx_qpcr_mix_genus_subject$data %>%
+  as_tibble() %>%
+  expand(qpcr_log = modelr::seq_range(qpcr_log, n = 20),
+         genus = unique(genus),
+         subject_id = unique(subject_id)) %>%
+  add_fitted_draws(m_cx_qpcr_mix_genus_subject) %>%
+  left_join(distinct(select(dat, genus, genus_label)), by = "genus") %>%
+  mutate(qpcr = exp(qpcr_log)) %>%
+  identity() -> m_cx_qpcr_mix_genus_subject_fitted
+m_cx_qpcr_mix_genus_subject_fitted
+
+
+m_cx_qpcr_mix_genus_subject_fitted %>%
+  ggplot(aes(x = qpcr_log, y = .value)) +
+  facet_wrap(facets = ~ genus_label, scales = "free_y") +
+  stat_lineribbon() +
+  scale_fill_brewer(palette = "Reds") +
+  labs(x = "Total Bacterial Abundance by 16S rRNA Gene qPCR (log copies per μL)",
+       y = "Probability of Positive MDRO Culture",
+       fill = "Posterior\nCredible\nInterval") +
+  theme_bw() +
+  theme(strip.text = ggtext::element_markdown(color = "black", size = 8),
+        axis.text.x = ggtext::element_markdown(color = "black"),
+        axis.text.y = ggtext::element_markdown(color = "black"),
+        legend.position = c(0.9, 0.12),
+        legend.background = element_rect(fill = "white", color = "black", size = 0.25),
+        strip.background = element_blank()) -> p_cx_qpcr
+p_cx_qpcr
+
+
+
+
+#' run model: shannon
+dat_cx_qpcr %>%
+  brm(formula = cx_positive ~ (shannon_scaled + 0 | genus) + (1 | subject_id),
+      data = .,
+      family = bernoulli,
+      chains = 4,
+      cores = 4,
+      control = list("adapt_delta" = 0.999, max_treedepth = 18),
+      backend = "cmdstanr",
+      seed = 16) -> m_cx_shannon_mix_genus_subject
+
+m_cx_shannon_mix_genus_subject %>% write_rds(file = "./models/binomial/m_cx_v_shannon_mix_genus_subject.rds.gz", compress = "gz")
+m_cx_shannon_mix_genus_subject <- read_rds(file = "./models/binomial/m_cx_v_shannon_mix_genus_subject.rds.gz")
+
+m_cx_shannon_mix_genus_subject
+rstan::check_hmc_diagnostics(m_cx_shannon_mix_genus_subject$fit)
+m_cx_shannon_mix_genus_subject %>% pp_check()
+
+m_cx_shannon_mix_genus_subject %>%
+  posterior_summary() %>%
+  as_tibble(rownames = "param") %>%
+  gt::gt() %>%
+  gt::fmt_number(columns = 2:5, n_sigfig = 3)
+
+
+#' fitted
+m_cx_shannon_mix_genus_subject$data %>%
+  as_tibble() %>%
+  expand(shannon_scaled = modelr::seq_range(shannon_scaled, n = 20),
+         genus = unique(genus),
+         subject_id = unique(subject_id)) %>%
+  mutate(shannon = shannon_scaled * sd(dat_cx_qpcr$shannon, na.rm = TRUE) + mean(dat_cx_qpcr$shannon, na.rm = TRUE)) %>%
+  add_fitted_draws(m_cx_shannon_mix_genus_subject) %>%
+  left_join(distinct(select(dat, genus, genus_label)), by = "genus") %>%
+  identity() -> m_cx_shannon_mix_genus_subject_fitted
+m_cx_shannon_mix_genus_subject_fitted
+
+
+m_cx_shannon_mix_genus_subject_fitted %>%
+  ggplot(aes(x = shannon, y = .value)) +
+  facet_wrap(facets = ~ genus_label, scales = "free_y") +
+  stat_lineribbon() +
+  scale_fill_brewer(palette = "Reds") +
+  labs(x = "Bacterial Community Shannon Diversity",
+       y = "Probability of Positive MDRO Culture",
+       fill = "Posterior\nCredible\nInterval") +
+  theme_bw() +
+  theme(strip.text = ggtext::element_markdown(color = "black", size = 8),
+        axis.text.x = ggtext::element_markdown(color = "black"),
+        axis.text.y = ggtext::element_markdown(color = "black"),
+        legend.position = c(0.9, 0.12),
+        legend.background = element_rect(fill = "white", color = "black", size = 0.25),
+        strip.background = element_blank()) -> p_cx_shannon
+p_cx_shannon
+
+
+
+
+
+
+#' run model: num_asvs
+dat_cx_qpcr %>%
+  brm(formula = cx_positive ~ (num_asvs_scaled + 0 | genus) + (1 | subject_id),
+      data = .,
+      family = bernoulli,
+      chains = 4,
+      cores = 4,
+      control = list("adapt_delta" = 0.999, max_treedepth = 18),
+      backend = "cmdstanr",
+      seed = 16) -> m_cx_num_asvs_mix_genus_subject
+
+m_cx_num_asvs_mix_genus_subject %>% write_rds(file = "./models/binomial/m_cx_v_num_asvs_mix_genus_subject.rds.gz", compress = "gz")
+m_cx_num_asvs_mix_genus_subject <- read_rds(file = "./models/binomial/m_cx_v_num_asvs_mix_genus_subject.rds.gz")
+
+m_cx_num_asvs_mix_genus_subject
+rstan::check_hmc_diagnostics(m_cx_num_asvs_mix_genus_subject$fit)
+m_cx_num_asvs_mix_genus_subject %>% pp_check()
+
+m_cx_num_asvs_mix_genus_subject %>%
+  posterior_summary() %>%
+  as_tibble(rownames = "param") %>%
+  gt::gt() %>%
+  gt::fmt_number(columns = 2:5, n_sigfig = 3)
+
+
+#' fitted
+m_cx_num_asvs_mix_genus_subject$data %>%
+  as_tibble() %>%
+  expand(num_asvs_scaled = modelr::seq_range(num_asvs_scaled, n = 20),
+         genus = unique(genus),
+         subject_id = unique(subject_id)) %>%
+  mutate(num_asvs = num_asvs_scaled * sd(dat_cx_qpcr$num_asvs, na.rm = TRUE) + mean(dat_cx_qpcr$num_asvs, na.rm = TRUE)) %>%
+  add_fitted_draws(m_cx_num_asvs_mix_genus_subject) %>%
+  left_join(distinct(select(dat, genus, genus_label)), by = "genus") %>%
+  identity() -> m_cx_num_asvs_mix_genus_subject_fitted
+m_cx_num_asvs_mix_genus_subject_fitted
+
+
+m_cx_num_asvs_mix_genus_subject_fitted %>%
+  ggplot(aes(x = num_asvs, y = .value)) +
+  facet_wrap(facets = ~ genus_label, scales = "free_y") +
+  stat_lineribbon() +
+  scale_fill_brewer(palette = "Reds") +
+  labs(x = "Bacterial Community Richness (Number of ASVs)",
+       y = "Probability of Positive MDRO Culture",
+       fill = "Posterior\nCredible\nInterval") +
+  theme_bw() +
+  theme(strip.text = ggtext::element_markdown(color = "black", size = 8),
+        axis.text.x = ggtext::element_markdown(color = "black"),
+        axis.text.y = ggtext::element_markdown(color = "black"),
+        legend.position = c(0.9, 0.12),
+        legend.background = element_rect(fill = "white", color = "black", size = 0.25),
+        strip.background = element_blank()) -> p_cx_num_asvs
+p_cx_num_asvs
 
 
 
