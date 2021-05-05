@@ -260,7 +260,7 @@ __Figure 2: Impact of distance from the patient on bacterial DNA deposition in t
 
 ```{r fig3, eval=TRUE, autodep=TRUE, fig.align='center', out.width='90%'}
 
-knitr::include_graphics(path = "./figs/p_microbiome_gp_combined.svg")
+knitr::include_graphics(path = "./figs/p_microbiome_gp_combined.png")
 
 
 ```
