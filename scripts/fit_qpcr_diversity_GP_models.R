@@ -79,6 +79,8 @@ shannon
 #' add qPCR data
 read_csv("./tabs/iceman_qpcr.csv") %>%
   left_join(shannon, by = "specimen_id") %>%
+  mutate(qpcr_total_copies = qpcr_copy_per_ul * 80,
+         ) %>%
   identity() -> qpcr
 qpcr
 
@@ -115,8 +117,18 @@ meta_asv %>%
   ungroup() %>%
   # add qPCR bacterial abundance data
   left_join(qpcr, by = "specimen_id") %>%
+  mutate(qpcr_copy_per_cm2 = case_when(specimen_site == "ES1" ~ qpcr_total_copies/1300,
+                                       specimen_site == "ES2" ~ qpcr_total_copies/800,
+                                       specimen_site == "ES3" ~ qpcr_total_copies/1000)) %>%
   identity() -> meta_asv_genus_qpcr
 meta_asv_genus_qpcr
+
+
+
+meta_asv_genus_qpcr %>%
+  qplot(data = ., x = qpcr_copy_per_ul, y = qpcr_copy_per_cm2, color = specimen_site) +
+  scale_x_log10() +
+  scale_y_log10()
 
 
 
@@ -134,9 +146,9 @@ dat_asv_genus_qpcr
 
 #' simple data form
 dat_asv_genus_qpcr %>%
-  select(specimen_id, subject_id, sampleevent, specimen_site, qpcr_copy_per_ul, shannon, num_asvs, distance_meters, mean_distance_meters) %>%
+  select(specimen_id, subject_id, sampleevent, specimen_site, qpcr_copy_per_cm2, shannon, num_asvs, distance_meters, mean_distance_meters) %>%
   distinct() %>%
-  rename(qpcr = qpcr_copy_per_ul) %>%
+  rename(qpcr = qpcr_copy_per_cm2) %>%
   mutate_at(.vars = vars(qpcr, shannon, num_asvs), .funs = list("scaled" = ~ scale(.x)[,1], "log" = ~ log(.x))) %>%
   identity() -> dat_scaled
 dat_scaled
@@ -206,12 +218,13 @@ m_mean_distance_gp_qpcr_fitted %>%
   scale_fill_brewer(palette = "Blues") +
   #scale_y_log10() +
   labs(x = "Distance from Patient & Towards Wastewater Sites (meters)",
-       y = "16S rRNA copies/μL",
+       y = "16S rRNA copies/cm<sup>2</sup>",
        fill = "Posterior\nCredible\nInterval") +
   theme_bw() +
   theme(strip.text = ggtext::element_markdown(color = "black", size = 8),
         axis.text.x = ggtext::element_markdown(color = "black"),
         axis.text.y = ggtext::element_markdown(color = "black"),
+        axis.title.y = ggtext::element_markdown(color = "black"),
         legend.position = c(0.08, 0.78),
         legend.background = element_rect(fill = "white", color = "black", size = 0.25),
         strip.background = element_blank()) -> p_qpcr_gp
@@ -279,12 +292,13 @@ m_mean_distance_gp_qpcr_subject_fitted %>%
   scale_fill_brewer(palette = "Blues") +
   #scale_y_log10() +
   labs(x = "Distance from Patient & Towards Wastewater Sites (meters)",
-       y = "16S rRNA copies/μL",
+       y = "16S rRNA copies/cm<sup>2</sup>",
        fill = "Posterior Credible Interval") +
   theme_bw() +
   theme(strip.text = ggtext::element_markdown(color = "black", size = 8),
         axis.text.x = ggtext::element_markdown(color = "black"),
         axis.text.y = ggtext::element_markdown(color = "black"),
+        axis.title.y = ggtext::element_markdown(color = "black"),
         legend.position = "top",
         legend.direction = "horizontal",
         #legend.background = element_rect(fill = "white", color = "black", size = 0.25),
@@ -367,6 +381,7 @@ m_mean_distance_gp_shannon_subject_fitted %>%
   theme(strip.text = ggtext::element_markdown(color = "black", size = 8),
         axis.text.x = ggtext::element_markdown(color = "black"),
         axis.text.y = ggtext::element_markdown(color = "black"),
+        axis.title.y = ggtext::element_markdown(color = "black"),
         legend.position = "top",
         legend.direction = "horizontal",
         #legend.background = element_rect(fill = "white", color = "black", size = 0.25),
@@ -451,6 +466,7 @@ m_mean_distance_gp_num_asvs_subject_fitted %>%
   theme(strip.text = ggtext::element_markdown(color = "black", size = 8),
         axis.text.x = ggtext::element_markdown(color = "black"),
         axis.text.y = ggtext::element_markdown(color = "black"),
+        axis.title.y = ggtext::element_markdown(color = "black"),
         legend.position = "top",
         legend.direction = "horizontal",
         #legend.background = element_rect(fill = "white", color = "black", size = 0.25),
@@ -523,7 +539,10 @@ qpcr %>%
   left_join(select(meta_asv, specimen_id, subject_id, specimen_site, sampleevent)) %>%
   distinct() %>%
   left_join(dat, by = c("subject_id", "specimen_site", "sampleevent")) %>%
-  rename(qpcr = qpcr_copy_per_ul) %>%
+  mutate(qpcr_copy_per_cm2 = case_when(specimen_site == "ES1" ~ qpcr_total_copies/1300,
+                                       specimen_site == "ES2" ~ qpcr_total_copies/800,
+                                       specimen_site == "ES3" ~ qpcr_total_copies/1000)) %>%
+  rename(qpcr = qpcr_copy_per_cm2) %>%
   mutate_at(.vars = vars(qpcr, shannon, num_asvs), .funs = list("scaled" = ~ scale(.x)[,1], "log" = ~ log(.x))) %>%
   identity() -> dat_cx_qpcr
 dat_cx_qpcr
@@ -572,13 +591,14 @@ m_cx_qpcr_mix_genus_subject_fitted %>%
   facet_wrap(facets = ~ genus_label, scales = "free_y") +
   stat_lineribbon() +
   scale_fill_brewer(palette = "Reds") +
-  labs(x = "Total Bacterial Abundance by 16S rRNA Gene qPCR (log copies per μL)",
+  labs(x = "Total Bacterial Abundance by 16S rRNA Gene qPCR (log copies per cm<sup>2</sup>)",
        y = "Probability of Positive MDRO Culture",
        fill = "Posterior\nCredible\nInterval") +
   theme_bw() +
   theme(strip.text = ggtext::element_markdown(color = "black", size = 8),
         axis.text.x = ggtext::element_markdown(color = "black"),
         axis.text.y = ggtext::element_markdown(color = "black"),
+        axis.title.x = ggtext::element_markdown(color = "black"),
         legend.position = c(0.9, 0.12),
         legend.background = element_rect(fill = "white", color = "black", size = 0.25),
         strip.background = element_blank()) -> p_cx_qpcr
