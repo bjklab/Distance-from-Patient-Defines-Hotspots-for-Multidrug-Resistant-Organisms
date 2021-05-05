@@ -218,7 +218,7 @@ m_mean_distance_gp_qpcr_fitted %>%
   scale_fill_brewer(palette = "Blues") +
   #scale_y_log10() +
   labs(x = "Distance from Patient & Towards Wastewater Sites (meters)",
-       y = "16S rRNA copies/cm<sup>2</sup>",
+       y = "16S rRNA copies per cm<sup>2</sup>",
        fill = "Posterior\nCredible\nInterval") +
   theme_bw() +
   theme(strip.text = ggtext::element_markdown(color = "black", size = 8),
@@ -292,7 +292,7 @@ m_mean_distance_gp_qpcr_subject_fitted %>%
   scale_fill_brewer(palette = "Blues") +
   #scale_y_log10() +
   labs(x = "Distance from Patient & Towards Wastewater Sites (meters)",
-       y = "16S rRNA copies/cm<sup>2</sup>",
+       y = "16S rRNA copies per cm<sup>2</sup>",
        fill = "Posterior Credible Interval") +
   theme_bw() +
   theme(strip.text = ggtext::element_markdown(color = "black", size = 8),
