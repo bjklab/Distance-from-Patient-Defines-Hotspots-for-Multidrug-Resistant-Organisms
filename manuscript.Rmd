@@ -230,7 +230,7 @@ knitr::include_graphics(path = "./figs/p_cx_gp.svg")
 ```
   
   
-__Figure 1: Impact of distance from the patient on MDRO detection in the healthcare environment.__ Distance from the head of the patient's bed and towards the wastewater sites is shown on the horizontal axis. The vertical axis depicts the probability of MDRO detection by selective culture for each of 11 detected MDROs according to a logistic regression model incorporating a Gaussian process for distance. The black line shows the best estimate, and shades of red indicate 50%, 80%, and 95% posterior credible intervals. ESBL = extended-spectrum beta-lactamase; CR = carbapenem-resistant; VRE = vancomycin-resistant _Enterococcus_; MRSA = methicillin-resistant _S. aureus_.    
+__Figure 1: Impact of distance from the patient on MDRO detection in the healthcare environment.__ Distance from the head of the patient's bed and towards the wastewater sites is shown on the horizontal axis. The vertical axis depicts the probability of MDRO detection by selective culture for each of 11 detected MDROs according to a logistic regression model incorporating a Gaussian process prior for distance. The black line shows the best estimate, and shades of red indicate 50%, 80%, and 95% posterior credible intervals. ESBL = extended-spectrum beta-lactamase; CR = carbapenem-resistant; VRE = vancomycin-resistant _Enterococcus_; MRSA = methicillin-resistant _S. aureus_.    
   
   
 -----  
@@ -260,7 +260,7 @@ __Figure 2: Impact of distance from the patient on bacterial DNA deposition in t
 
 ```{r fig3, eval=TRUE, autodep=TRUE, fig.align='center', out.width='90%'}
 
-knitr::include_graphics(path = "./figs/p_microbiome_gp_combined.png")
+knitr::include_graphics(path = "./figs/p_microbiome_gp_combined.svg")
 
 
 ```

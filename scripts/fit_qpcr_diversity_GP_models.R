@@ -255,7 +255,7 @@ dat_scaled %>%
       family = gaussian,
       chains = 4,
       cores = 4,
-      control = list("adapt_delta" = 0.9999, max_treedepth = 18),
+      control = list("adapt_delta" = 0.99999, max_treedepth = 18),
       backend = "cmdstanr",
       seed = 16) -> m_mean_distance_gp_qpcr_subject
 
