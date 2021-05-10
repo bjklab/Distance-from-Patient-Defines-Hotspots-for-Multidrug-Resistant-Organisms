@@ -2,7 +2,7 @@
 #title: "Healthcare Micro-Environments Define Multidrug-Resistant Organism Persistence"  
 #author: "Brendan J. Kelly, MD, MS"  
 bibliography: bib/references.bib
-csl: csl/journal-of-clinical-microbiology.csl
+csl: csl/infection-control-and-hospital-epidemiology.csl
 output: html_document
 css: style_helvetica_double.css
 ---

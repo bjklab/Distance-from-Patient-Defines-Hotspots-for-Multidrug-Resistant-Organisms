@@ -89,6 +89,19 @@ qpcr
 
 
 #' ###########################################
+#' distance description
+#' ###########################################
+
+iceman_corrected %>%
+  group_by(specimen_site) %>%
+  summarise(med = median(distance_meters), q25 = quantile(distance_meters, 0.25), q75 = quantile(distance_meters, 0.75)) %>%
+  gt::gt() %>%
+  gt::fmt_number(columns = 2:tidyselect::last_col(), decimals = 2)
+
+
+
+
+#' ###########################################
 #' 
 #' qPCR
 #' 
@@ -197,7 +210,8 @@ m_mean_distance_gp_qpcr %>%
   posterior_summary() %>%
   as_tibble(rownames = "param") %>%
   gt::gt() %>%
-  gt::fmt_number(columns = 2:5, n_sigfig = 3)
+  gt::fmt_number(columns = 2:5, n_sigfig = 3) %>%
+  
 
 
 #' fitted
@@ -239,6 +253,25 @@ p_qpcr_gp
 #   ggsave(filename = "./figs/p_qpcr_gp.svg", height = 4, width = 6, units = "in")
 
 
+#' posterior contrast
+
+m_mean_distance_gp_qpcr$data %>%
+  as_tibble() %>%
+  expand(mean_distance_meters = c(max(mean_distance_meters, nna.rm = TRUE), min(mean_distance_meters, na.rm = TRUE))) %>%
+  tidybayes::add_fitted_draws(model = m_mean_distance_gp_qpcr) %>%
+  ungroup() %>%
+  select(mean_distance_meters, .value) %>%
+  mutate(mean_distance_meters = round(mean_distance_meters, 1)) %>%
+  group_by(mean_distance_meters) %>%
+  mutate(draw = seq_along(mean_distance_meters)) %>%
+  pivot_wider(id_cols = draw, values_from = .value, names_from = mean_distance_meters, names_prefix = "dist_") %>%
+  mutate(contrast_value_log_scale = dist_2.7 - dist_0.5,
+         contrast_value_qpcr = exp(contrast_value_log_scale)) %>%
+  summarise_at(.vars = vars(contains("contrast")), .funs = list("med" = ~ median(.x), "q2.5" = ~ quantile(.x, 0.025), "q97.5" = ~ quantile(.x, 0.975))) %>%
+  pivot_longer(cols = everything()) %>%
+  arrange(name)
+
+  
 
 
 
@@ -569,9 +602,19 @@ m_cx_qpcr_mix_genus_subject %>% pp_check()
 m_cx_qpcr_mix_genus_subject %>%
   posterior_summary() %>%
   as_tibble(rownames = "param") %>%
+  #mutate_at(.vars = vars(Estimate, Q2.5, Q97.5), .funs = list("exp" = ~ exp(.x))) %>%
   gt::gt() %>%
-  gt::fmt_number(columns = 2:5, n_sigfig = 3)
-
+  gt::fmt_number(columns = 2:tidyselect::last_col(), n_sigfig = 3) %>%
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightcyan")#,
+      #gt::cell_text(weight = "bold")
+    ),
+    locations = gt::cells_body(
+      columns = gt::everything(),
+      rows = (Q2.5 > 0 & Q97.5 > 0) | (Q2.5 < 0 & Q97.5 < 0)
+    )
+  )
 
 #' fitted
 m_cx_qpcr_mix_genus_subject$data %>%
@@ -629,7 +672,18 @@ m_cx_shannon_mix_genus_subject %>%
   posterior_summary() %>%
   as_tibble(rownames = "param") %>%
   gt::gt() %>%
-  gt::fmt_number(columns = 2:5, n_sigfig = 3)
+  gt::fmt_number(columns = 2:5, n_sigfig = 3) %>%
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightcyan")#,
+      #gt::cell_text(weight = "bold")
+    ),
+    locations = gt::cells_body(
+      columns = gt::everything(),
+      rows = (Q2.5 > 0 & Q97.5 > 0) | (Q2.5 < 0 & Q97.5 < 0)
+    )
+  )
+
 
 
 #' fitted
@@ -689,7 +743,18 @@ m_cx_num_asvs_mix_genus_subject %>%
   posterior_summary() %>%
   as_tibble(rownames = "param") %>%
   gt::gt() %>%
-  gt::fmt_number(columns = 2:5, n_sigfig = 3)
+  gt::fmt_number(columns = 2:5, n_sigfig = 3) %>%
+  gt::tab_style(
+    style = list(
+      gt::cell_fill(color = "lightcyan")#,
+      #gt::cell_text(weight = "bold")
+    ),
+    locations = gt::cells_body(
+      columns = gt::everything(),
+      rows = (Q2.5 > 0 & Q97.5 > 0) | (Q2.5 < 0 & Q97.5 < 0)
+    )
+  )
+
 
 
 #' fitted
