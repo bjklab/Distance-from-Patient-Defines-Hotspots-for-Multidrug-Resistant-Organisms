@@ -130,9 +130,9 @@ meta_asv %>%
   ungroup() %>%
   # add qPCR bacterial abundance data
   left_join(qpcr, by = "specimen_id") %>%
-  mutate(qpcr_copy_per_cm2 = case_when(specimen_site == "ES1" ~ qpcr_total_copies/1300,
-                                       specimen_site == "ES2" ~ qpcr_total_copies/800,
-                                       specimen_site == "ES3" ~ qpcr_total_copies/1000)) %>%
+  mutate(qpcr_copy_per_cm2 = case_when(specimen_site == "ES1" ~ qpcr_total_copies/570, # ES1 flocked swab surface area ~ 570cm2
+                                       specimen_site == "ES2" ~ qpcr_total_copies/540, # ES2 flocked swab surface area ~ 540cm2
+                                       specimen_site == "ES3" ~ qpcr_total_copies/440)) %>% # ES3 flocked swab surface area ~ 440cm2
   identity() -> meta_asv_genus_qpcr
 meta_asv_genus_qpcr
 
@@ -210,7 +210,7 @@ m_mean_distance_gp_qpcr %>%
   posterior_summary() %>%
   as_tibble(rownames = "param") %>%
   gt::gt() %>%
-  gt::fmt_number(columns = 2:5, n_sigfig = 3) %>%
+  gt::fmt_number(columns = 2:5, n_sigfig = 3)
   
 
 
@@ -261,15 +261,17 @@ m_mean_distance_gp_qpcr$data %>%
   tidybayes::add_fitted_draws(model = m_mean_distance_gp_qpcr) %>%
   ungroup() %>%
   select(mean_distance_meters, .value) %>%
-  mutate(mean_distance_meters = round(mean_distance_meters, 1)) %>%
+  mutate(mean_distance_meters = round(mean_distance_meters, 1),
+         .value = exp(.value)) %>% # restore qPCR from log scale to linear scale
   group_by(mean_distance_meters) %>%
   mutate(draw = seq_along(mean_distance_meters)) %>%
   pivot_wider(id_cols = draw, values_from = .value, names_from = mean_distance_meters, names_prefix = "dist_") %>%
-  mutate(contrast_value_log_scale = dist_2.7 - dist_0.5,
-         contrast_value_qpcr = exp(contrast_value_log_scale)) %>%
+  mutate(contrast = dist_2.7 - dist_0.5) %>%
   summarise_at(.vars = vars(contains("contrast")), .funs = list("med" = ~ median(.x), "q2.5" = ~ quantile(.x, 0.025), "q97.5" = ~ quantile(.x, 0.975))) %>%
   pivot_longer(cols = everything()) %>%
-  arrange(name)
+  arrange(name) %>%
+  gt::gt() %>%
+  gt::fmt_number(columns = 2, decimals = 0)
 
   
 
@@ -572,9 +574,9 @@ qpcr %>%
   left_join(select(meta_asv, specimen_id, subject_id, specimen_site, sampleevent)) %>%
   distinct() %>%
   left_join(dat, by = c("subject_id", "specimen_site", "sampleevent")) %>%
-  mutate(qpcr_copy_per_cm2 = case_when(specimen_site == "ES1" ~ qpcr_total_copies/1300,
-                                       specimen_site == "ES2" ~ qpcr_total_copies/800,
-                                       specimen_site == "ES3" ~ qpcr_total_copies/1000)) %>%
+  mutate(qpcr_copy_per_cm2 = case_when(specimen_site == "ES1" ~ qpcr_total_copies/570, # ES1 flocked swab surface area ~ 570cm2
+                                       specimen_site == "ES2" ~ qpcr_total_copies/540, # ES2 flocked swab surface area ~ 540cm2
+                                       specimen_site == "ES3" ~ qpcr_total_copies/440)) %>% # ES3 flocked swab surface area ~ 440cm2
   rename(qpcr = qpcr_copy_per_cm2) %>%
   mutate_at(.vars = vars(qpcr, shannon, num_asvs), .funs = list("scaled" = ~ scale(.x)[,1], "log" = ~ log(.x))) %>%
   identity() -> dat_cx_qpcr
