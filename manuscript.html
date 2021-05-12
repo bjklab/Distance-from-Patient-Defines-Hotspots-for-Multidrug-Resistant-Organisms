@@ -496,7 +496,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
 <li><p><strong>Specimen Collection and MDRO Culture</strong>: Upon subject enrollment, environmental surfaces were sampled longitudinally until discharge from the enrolling ICU room, or day 28. Two composite samples were obtained from each in-room area (near, intermediate, and far), with one sponge stick (3M) used for bacterial culture and a flocked swab (Copan) for microbiome analysis. Sampling sites and sampling procedures were standardized with an approximate surface area of less than 50 inches<sup>2</sup> per site for each sponge stick and 20 linear inches per site for each flocked swab. Sponge stick specimens for bacterial culture were collected in stomacher bags to which phosphate-buffered saline with 0.02% Tween (PBST) was added, with mixture using a mechanical homogenizer (Seward). After centrifugation, the cell pellet was plated on six selective media, including BD MRSA Chromagar, Hardy Chromagar CRE, CHROMagar KPC, Hardy Chromagar ESBL, Thermo SPECTRA VRE, and Anaerobe Systems CCFA-HT. Cultures were incubated aerobically for 18-24 hours at 35-37 C, with the exception of Anaerobe Systems CCFA-HT which was incubated in anaerobic conditions for 18-48 hours. All bacterial colonies with appropriate morphology and chromogenic features were subcultured to blood agar and confirmed by MALDI-TOF with the exception of MRSA. Due to inability to recover isolates after laboratory shutdown during the COVID-19 pandemic, we were unable to assess recovery of one MDRO from three specimens, and we were unable to assess recovery of 6 MDROs from 3 specimens. The presented data and models account for these missing cultures.</p></li>
 <li><p><strong>16S rRNA Gene Sequencing, <span style="background-color:lightcyan">Quantitative PCR,</span> and Bioinformatics</strong>: <span style="background-color:lightcyan">A subset of samples were included for microbiome analysis, representing the earliest samples collected and processed prior to the COVID-19 pandemic.</span> Parallel surface samples were collected with flocked nylon swabs 16S rRNA gene sequencing and microbiome analysis. Swabs were frozen at -80C prior to DNA extraction and sequencing. DNA extraction was performed using MoBio PowerSoil DNA isolation kit. The V1–V2 hypervariable region of the 16S rRNA gene was amplified using barcoded primers 27F (5′AATGATACGGCGACCACCGAGATCTACACTATGGTAATTGTAGAGTTTGATCCTGGCTCAG-3′) and 338R (5′CAAGCAGAAGACGGCATACGAGATNNNNNNNNNNNNAGTCAGTCAGCCTGCTGCCTCCCGTAGGAGT-3′). Thermocycler conditions were as follows: 5 min at 95 °C, 30*(30 s at 95 °C, 30 s at 56 °C, 90 s at 72 °C), 8 min at 72 °C. 16S rRNA gene sequencing was performed with the Illumina MiSeq platform with 250-bp paired-end reads, permitting high-quality coverage of the 316-bp V1–V2 amplicon. Amplicon sequence variants (ASVs) were identified using DADA2 within the Quantitative Insights Into Microbial Ecology 2 (QIIME2) pipeline.<span class="citation"><sup>14,15</sup></span> Genus-level taxonomic assignment was performed by comparison to the Greengenes reference database,<span class="citation"><sup>16</sup></span> using the naive Bayes classifier implemented in scikit-bio.<span class="citation"><sup>17</sup></span> <span style="background-color:lightcyan">To account for the compositional nature of microbiome measures, which may confound the analysis of relationships between bacterial community members,</span> the centered log-ratio transform was applied to genus-level abundances prior to modeling.<span class="citation"><sup>18</sup></span> <span style="background-color:lightcyan">16S rRNA gene quantitative PCR (qPCR) also targeted the V1-V2 hypervariable region, with primers BSF8 (5’-AGAGTTTGATCCTGGCTCAG-3’) and BSR357 (5’-CTGCTGCCTYCCGTA-3’), and probe 5’-TAACAC ATGCAAGTCGA-3’. The standard curve was generated with a plasmid containing the 16S rRNA gene derived from <em>Streptococcus</em>.</span></p></li>
 <li><p><strong>Distance Data Collection</strong>: Distances from the environmental sampling site to the patient bed was recorded using a laser measuring device (Bosch GLM 20). Researchers positioned the laser measure at the head of the bed within the room and recorded distances to the in-room computer workstation, the medication cart, IV pole, and bathroom door. <span style="background-color:lightcyan">The intermediate surfaces were 2.04m (IQR 1.88 – 2.19m) from the patient, and the far surfaces were 2.81m (IQR 2.37 – 3.04m) from the patient.</span> Surfaces in the near group were approximated to be 0.5m from the head of the patient’s bed.</p></li>
-<li><p><strong>Definition of Exposures and Outcomes</strong>: The primary exposure of interest was the distance from the patient (measured towards the wastewater sites). The primary outcome of interest was the detection of a culturable MDRO, including MRSA, <em>C.difficile</em>, vancomycin-resistant <em>Enterococcus</em> (VRE), extended-spectrum beta-lactamase (ESBL) producing <em>Enterobacterales</em>, carbapenem-resistant <span style="background-color:lightcyan">(CR)</span> <em>Enterobacterales</em>, <em>Acinetobacter</em>, or <em>Pseudomonas</em>. Secondary outcomes of interest included the detection of MDRO genera by 16S rRNA gene sequencing.<span style="background-color:lightcyan"> <em>C.difficile</em> was included within the primary outcome of MDRO detection due to its importance as an HAI and prior evidence supporting environmental transmission.</span></p></li>
+<li><p><strong>Definition of Exposures and Outcomes</strong>: The primary exposure of interest was the distance from the patient (measured towards the wastewater sites). The primary outcome of interest was the detection of a culturable MDRO, including MRSA, <em>C. difficile</em>, vancomycin-resistant <em>Enterococcus</em> (VRE), extended-spectrum beta-lactamase (ESBL) producing <em>Enterobacterales</em>, carbapenem-resistant <span style="background-color:lightcyan">(CR)</span> <em>Enterobacterales</em>, <em>Acinetobacter</em>, or <em>Pseudomonas</em>. Secondary outcomes of interest included the detection of MDRO genera by 16S rRNA gene sequencing.<span style="background-color:lightcyan"> <em>C. difficile</em> was included within the primary outcome of MDRO detection due to its importance as an HAI and prior evidence supporting environmental transmission.</span></p></li>
 <li><p><strong>Statistical Methods</strong>: Data were organized using R statistical software version 3.6.1,<span class="citation"><sup>19</sup></span> and plots generated using the “ggplot2” package.<span class="citation"><sup>20</sup></span> We examined the relationship between distance from the patient (towards the wastewater sites) and the probability of MDRO detection using a Gaussian process model (exponentiated-quadratic kernel) for distance, with models fit separately for each of 11 detected MDROs. The same Gaussian process model evaluated the relationship between distance and the detection of MDRO genera. We also evaluated mixed-effects model incorporating a random effect for subjects to account for clustering of longitudinal data. To understand the relationship between bacterial DNA contamination and risk for MDRO detection, we used a mixed-effects model with random effects for genus and sampling site. Models were fit using Stan Hamiltonian Monte Carlo (HMC) version 2.21, via the “brms” package with default, weakly-informative priors.<span class="citation"><sup>21,22</sup></span> Prior predictive modeling was performed, and models were fit with 4 chains of 1000 iterations, confirmed with HMC diagnostics (no divergent iterations, Rhat statistic &lt; 1.1 for all parameters, and E-BFMI &gt; 0.2).<span class="citation"><sup>23–25</sup></span> We examined parameter distributions at 50%, 80%, and 95% posterior credible intervals to understand the relationship between exposure and outcome variables.</p></li>
 <li><p><strong>Power and Sample Size</strong>: We anticipated that the enrollment of 50 subjects would permit 85% power to detect a difference of 20% in MDRO culture recovery between near and far specimen collection sites, with type 1 error less than 0.05.</p></li>
 <li><p><strong>Availability of Data</strong>: Sequence data has been uploaded to the National Center for Biotechnology Information’s Sequence Read Archive (NCBI SRA): PRJNA689547. Data, analysis scripts, and model code are available at <a href="https://github.com/bjklab" class="uri">https://github.com/bjklab</a>.</p></li>
@@ -508,7 +508,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
 <div id="results" class="section level3">
 <h3>Results:</h3>
 <ul>
-<li><p><strong>Detection of MDROs in the Proximity to Patient-Associated MDROs</strong>: We enrolled 51 patient rooms at the time of admitting a patient who had been recently diagnosed with MDRO colonization or infection by clinical culture <span style="background-color:lightcyan">between November 4, 2019 and March 12, 2020, obtaining a median of 3 specimens per patient room (interquartile range (IQR) 4-6). Prior to patient entry, 75% of rooms (n=38) underwent terminal cleaning with ultraviolet germicidal irradiation (UVGI). All rooms received daily cleaning using Oxivir Plus, a hydrogen-peroxide cleaning product, with the exception of patients in <em>C. difficile</em> isolation whose rooms were cleaned with bleach.</span> The most common enrolling isolate for patients included in the study was C.difficile (n=16, 31%), followed by ESBL-producing Enterobacterales (ESBL) (n=15, 29%), MRSA (n=13, 25%), VRE (n=7, 14%), and <span style="background-color:lightcyan">CR</span> Gram-negative organisms (n=4, 8%). Across 51 subjects, we performed 136 sampling events, with each event collecting composite samples from three in-room sites (near, intermediate, and far), and each composite sample plated on six MDRO-selective media. <strong>Table 1</strong> shows the 11 MDROs identified across all enrolled subjects, the total number of times they were recovered from the healthcare environment, and frequency with which they were detected from cultured environmental specimens.</p></li>
+<li><p><strong>Detection of MDROs in the Proximity to Patient-Associated MDROs</strong>: We enrolled 51 patient rooms at the time of admitting a patient who had been recently diagnosed with MDRO colonization or infection by clinical culture <span style="background-color:lightcyan">between November 4, 2019 and March 12, 2020, obtaining a median of 3 specimens per patient room (interquartile range (IQR) 4-6). Prior to patient entry, 75% of rooms (n=38) underwent terminal cleaning with ultraviolet germicidal irradiation (UVGI). All rooms received daily cleaning using Oxivir Plus, a hydrogen-peroxide cleaning product, with the exception of patients in <em>C. difficile</em> isolation whose rooms were cleaned with bleach.</span> The most common enrolling isolate for patients included in the study was C. difficile (n=16, 31%), followed by ESBL-producing Enterobacterales (ESBL) (n=15, 29%), MRSA (n=13, 25%), VRE (n=7, 14%), and <span style="background-color:lightcyan">CR</span> Gram-negative organisms (n=4, 8%). Across 51 subjects, we performed 136 sampling events, with each event collecting composite samples from three in-room sites (near, intermediate, and far), and each composite sample plated on six MDRO-selective media. <strong>Table 1</strong> shows the 11 MDROs identified across all enrolled subjects, the total number of times they were recovered from the healthcare environment, and frequency with which they were detected from cultured environmental specimens.</p></li>
 <li><p><strong>Impact of Distance from Patient on MDRO Detection by Bacterial Culture</strong>: We related the probability of MDRO detection by selective culture to the distance from the patient and towards the wastewater sites, using mean distances from each of the three in-room sites sampled at each sampling event. <strong>Figure 1</strong> depicts the impact of distance from patient on each of the 11 MDROs encountered in across our cohort. The probability of detecting ESBL and CR Gram-negative organisms, including <em>Enterobacterales</em>, <em>Acinetobacter</em>, and <em>Pseudomonas</em>, increased with distance from the patient. In contrast, <em>C. difficile</em> and MRSA were more likely to be detected in close proximity to the patient, and less likely to be detected in the wastewater sites. Of note, VRE was distributed more evenly across all areas. Given the patterns of MDRO detection observed at the genus level, we also examined the relationship between aggregate Gram-negative or Gram-positive MDROs and the distance from patient (<strong>Supplemental Figure 1</strong>). This analysis confirmed the substantial increase in Gram-negative MDRO detection with increasing distance from the patient (and towards the wastewater site), with the opposite pattern observed among Gram-positive MDROs.</p></li>
 <li><p><strong>Impact of Distance from Patient on Bacterial DNA Deposition</strong>: We were able to complement comprehensive, culture-based surveillance with 16S rRNA gene sequencing to detect bacterial DNA deposition in the healthcare environment in a subset of 41 specimens from 16 of our cohort’s subjects. In <strong>Figure 2</strong>, we compare the impact of distance from patient on the bacterial DNA reads assigned to the 11 genera from which MDROs were cultured. We found that <em>Enterobaceriaceae</em>, including <em>Citrobacter</em>, <em>Enterobacter</em>, <em>Klebsiella</em>, and <em>Raoultella</em>, exhibited a similar pattern as did bacterial cultures, increasing with distance from the patient and in proximity to the wastewater sites. In contrast, bacterial DNA assigned to <em>Acinetobacter</em> and <em>Pseudomonas</em> was distributed more evenly across all areas, though bacterial culture was more likely to detect these genera in the wastewater sites. Bacterial DNA reads assigned to <em>Staphylococcus</em> were also distributed evenly across all areas, though bacterial culture was more likely to detect MRSA in close proximity to patients.</p></li>
 <li><p><strong>Relationship Between Bacterial DNA Deposition and MDRO Detection in the Healthcare Environment</strong>: To evaluate the relationship between bacterial DNA contamination detected by untargeted 16S rRNA gene sequencing and environmental MDRO risk, we performed mixed-effects regression to determine the association between genus-level bacterial DNA abundance and the probability of MDRO detection across all observed MDRO genera and sampling sites. A positive association was observed across multiple genera and sites, but the only association that achieved high posterior certainty was <em>Pseudomonas</em> in the far-from-patient site, <span style="background-color:lightcyan">finding that as the probability of detecting <em>Pseudomonas</em> DNA increased, so too did the probability of culturing CR <em>Pseudomonas</em> at the site </span>(OR 1.47, 95%CI 1.09 - 1.99). <span style="background-color:lightcyan">We further examined how bacterial community features, defined by 16S rRNA gene sequencing and qPCR, changed with distance from the patient and wastewater sites, as well as the association between bacterial community features and MDRO detection. We found that total bacterial abundance (16S rRNA gene copies per cm2 of surface area measured by qPCR) increased with proximity to wastewater sites, but the increase was small (1466 copies per cm2, 95%CI 670 – 2454 copies per cm2). Bacterial community Shannon diversity and richness (number of ASVs) did not change significantly with distance (<strong>Figure 3</strong>). The only association between a bacterial community feature (i.e., total bactertial abundance, diversity or richness) and probability of MDRO detection that achieved high posterior certainty was the association between total 16S rRNA gene copies and <em>Pseudomonas</em> detection (OR 1.19, 95%CI 1.03 – 1.41). </span></p></li>
@@ -536,7 +536,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#gtgrmdheqs .gt_table {
+#mrutymrjvb .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -561,7 +561,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   border-left-color: #D3D3D3;
 }
 
-#gtgrmdheqs .gt_heading {
+#mrutymrjvb .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -573,7 +573,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   border-right-color: #D3D3D3;
 }
 
-#gtgrmdheqs .gt_title {
+#mrutymrjvb .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -583,7 +583,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   border-bottom-width: 0;
 }
 
-#gtgrmdheqs .gt_subtitle {
+#mrutymrjvb .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -593,13 +593,13 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   border-top-width: 0;
 }
 
-#gtgrmdheqs .gt_bottom_border {
+#mrutymrjvb .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#gtgrmdheqs .gt_col_headings {
+#mrutymrjvb .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: black;
@@ -614,7 +614,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   border-right-color: #D3D3D3;
 }
 
-#gtgrmdheqs .gt_col_heading {
+#mrutymrjvb .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -634,7 +634,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   overflow-x: hidden;
 }
 
-#gtgrmdheqs .gt_column_spanner_outer {
+#mrutymrjvb .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -646,15 +646,15 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   padding-right: 4px;
 }
 
-#gtgrmdheqs .gt_column_spanner_outer:first-child {
+#mrutymrjvb .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#gtgrmdheqs .gt_column_spanner_outer:last-child {
+#mrutymrjvb .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#gtgrmdheqs .gt_column_spanner {
+#mrutymrjvb .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: black;
@@ -666,7 +666,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   width: 100%;
 }
 
-#gtgrmdheqs .gt_group_heading {
+#mrutymrjvb .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -688,7 +688,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   vertical-align: middle;
 }
 
-#gtgrmdheqs .gt_empty_group_heading {
+#mrutymrjvb .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -703,15 +703,15 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   vertical-align: middle;
 }
 
-#gtgrmdheqs .gt_from_md > :first-child {
+#mrutymrjvb .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#gtgrmdheqs .gt_from_md > :last-child {
+#mrutymrjvb .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#gtgrmdheqs .gt_row {
+#mrutymrjvb .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -730,7 +730,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   overflow-x: hidden;
 }
 
-#gtgrmdheqs .gt_stub {
+#mrutymrjvb .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -742,7 +742,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   padding-left: 12px;
 }
 
-#gtgrmdheqs .gt_summary_row {
+#mrutymrjvb .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -752,7 +752,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   padding-right: 5px;
 }
 
-#gtgrmdheqs .gt_first_summary_row {
+#mrutymrjvb .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -762,7 +762,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   border-top-color: #D3D3D3;
 }
 
-#gtgrmdheqs .gt_grand_summary_row {
+#mrutymrjvb .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -772,7 +772,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   padding-right: 5px;
 }
 
-#gtgrmdheqs .gt_first_grand_summary_row {
+#mrutymrjvb .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -782,11 +782,11 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   border-top-color: #D3D3D3;
 }
 
-#gtgrmdheqs .gt_striped {
+#mrutymrjvb .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#gtgrmdheqs .gt_table_body {
+#mrutymrjvb .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: black;
@@ -795,7 +795,7 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   border-bottom-color: black;
 }
 
-#gtgrmdheqs .gt_footnotes {
+#mrutymrjvb .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -809,13 +809,13 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   border-right-color: #D3D3D3;
 }
 
-#gtgrmdheqs .gt_footnote {
+#mrutymrjvb .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#gtgrmdheqs .gt_sourcenotes {
+#mrutymrjvb .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -829,46 +829,46 @@ Bacteria that are resistant to antibiotics commonly contaminate the healthcare e
   border-right-color: #D3D3D3;
 }
 
-#gtgrmdheqs .gt_sourcenote {
+#mrutymrjvb .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#gtgrmdheqs .gt_left {
+#mrutymrjvb .gt_left {
   text-align: left;
 }
 
-#gtgrmdheqs .gt_center {
+#mrutymrjvb .gt_center {
   text-align: center;
 }
 
-#gtgrmdheqs .gt_right {
+#mrutymrjvb .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#gtgrmdheqs .gt_font_normal {
+#mrutymrjvb .gt_font_normal {
   font-weight: normal;
 }
 
-#gtgrmdheqs .gt_font_bold {
+#mrutymrjvb .gt_font_bold {
   font-weight: bold;
 }
 
-#gtgrmdheqs .gt_font_italic {
+#mrutymrjvb .gt_font_italic {
   font-style: italic;
 }
 
-#gtgrmdheqs .gt_super {
+#mrutymrjvb .gt_super {
   font-size: 65%;
 }
 
-#gtgrmdheqs .gt_footnote_marks {
+#mrutymrjvb .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="gtgrmdheqs" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="mrutymrjvb" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>
